@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\People;
 use Exception;
+use App\Models\People;
 use Illuminate\Http\Request;
-use Response;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class PeopleController extends Controller
 {
@@ -15,7 +16,14 @@ class PeopleController extends Controller
     public function index()
     {
         try {
-            //code...
+            if (Auth::check()) {
+                $loggedInUserId = Auth::id();
+                $peoples = People::whereIn('user_id', [$loggedInUserId, 1])->paginate(10);
+            } else {
+                $peoples = People::where('user_id', 1)->paginate(10);
+            }
+
+            return Response($peoples);
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
         }
@@ -27,7 +35,8 @@ class PeopleController extends Controller
     public function store(Request $request)
     {
         try {
-            //code...
+            $request['user_id'] = Auth::id();
+            return People::create($request->all());
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
         }
@@ -39,7 +48,13 @@ class PeopleController extends Controller
     public function show(string $id)
     {
         try {
-            //code...
+            $obj = $this->findObjectById($id);
+
+            if ($obj->user_id !== Auth::id()) {
+                return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            return Response($obj);
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
         }
@@ -51,7 +66,13 @@ class PeopleController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            //code...
+            $object = $this->findObjectById($id);
+
+            if ($object->user_id !== Auth::id()) {
+                return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            }
+
+            return Response($object);
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
         }
@@ -69,14 +90,14 @@ class PeopleController extends Controller
         }
     }
 
-    protected function findProductById($id)
+    protected function findObjectById($id)
     {
-        $product = People::find($id);
+        $obj = People::find($id);
 
-        if (!$product) {
+        if (!$obj) {
             throw new Exception('People not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $product;
+        return $obj;
     }
 }

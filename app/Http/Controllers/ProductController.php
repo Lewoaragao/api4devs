@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Exception;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Throwable;
 
 class ProductController extends Controller
 {
@@ -35,8 +34,12 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request['user_id'] = Auth::id();
-        return Product::create($request->all());
+        try {
+            $request['user_id'] = Auth::id();
+            return Product::create($request->all());
+        } catch (Exception $e) {
+            return Response(['error' => $e->getMessage()], $e->getCode());
+        }
     }
 
     /**
@@ -45,7 +48,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = $this->findProductById($id);
+            $product = $this->findObjectById($id);
 
             if ($product->user_id !== Auth::id()) {
                 return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
@@ -63,17 +66,19 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $product = $this->findProductById($id);
+            $product = $this->findObjectById($id);
 
             if ($product->user_id !== Auth::id()) {
                 return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
             }
+
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
                 'quantity' => 'required|integer|min:0',
             ]);
+
             $product->update($validatedData);
             return Response($product);
         } catch (Exception $e) {
@@ -87,7 +92,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            $product = $this->findProductById($id);
+            $product = $this->findObjectById($id);
 
             if ($product->user_id !== Auth::id()) {
                 return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
@@ -99,7 +104,7 @@ class ProductController extends Controller
         }
     }
 
-    protected function findProductById($id)
+    protected function findObjectById($id)
     {
         $product = Product::find($id);
 

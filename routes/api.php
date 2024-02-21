@@ -28,13 +28,14 @@ Route::get('/hello', [RouteController::class, 'helloWorld']);
 
 // AUTH
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth:api');
 });
 
 // PUBLIC
 Route::get('/products', [ProductController::class, 'index']);
+Route::get('/peoples', [PeopleController::class, 'index']);
 
 // PRODUCT
 Route::middleware(['auth:api'])->group(function () {
