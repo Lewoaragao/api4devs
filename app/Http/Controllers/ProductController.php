@@ -16,7 +16,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('user_id', Auth::id())->paginate(10);
+        if (Auth::check()) {
+            // Obter o ID do usuário logado
+            $loggedInUserId = Auth::id();
+
+            // Recuperar os produtos dos dois usuários em uma única consulta
+            $products = Product::whereIn('user_id', [$loggedInUserId, 1])->paginate(10);
+        } else {
+            // Se o usuário não estiver autenticado, recuperar apenas os produtos do usuário com ID 1
+            $products = Product::where('user_id', 1)->paginate(10);
+        }
+
         return Response($products);
     }
 

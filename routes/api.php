@@ -33,6 +33,9 @@ Route::prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });
 
+// PUBLIC
+Route::get('/products', [ProductController::class, 'index']);
+
 // PRODUCT
 Route::middleware(['auth:api'])->group(function () {
     Route::resource('product', ProductController::class);
