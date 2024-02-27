@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encurtador de Link</title>
+    <meta author="Lewoaragao" />
+    <meta name="description" content="Various public and Open Source APIs for developers.">
+    <meta keywords="api4devs, api, dev, public, free, opensource" />
+
+    <title>api4devs - Public | Free | Open Source</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -20,7 +24,7 @@
         @include('template.header')
         @include('components.message')
         @yield('content')
-        @include('template.footer')
+        {{-- @include('template.footer') --}}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

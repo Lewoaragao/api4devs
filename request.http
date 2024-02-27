@@ -1,0 +1,8 @@
+@hostname = http://localhost:8000
+
+### PRODUCT
+GET {{hostname}}/api/products
+
+
+### PEOPLE
+GET {{hostname}}/api/peoples

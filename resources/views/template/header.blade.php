@@ -3,11 +3,13 @@
         <span class="fs-4 fw-bold">api4devs</span>
     </a>
 
-    <ul class="nav nav-pills">
+    <ul class="nav navbar-light bg-light">
         <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Início</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Atualizações</a></li>
         <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
         <li class="nav-item"><a href="#" class="nav-link">Sobre</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Contribuir</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Contato</a></li>
 
         @if (Auth::check())
             <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
