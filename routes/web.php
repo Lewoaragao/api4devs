@@ -17,9 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $products = Product::where('user_id', 1)->get();
-    $peoples = People::where('user_id', 1)->get();
 
-    return view('index', compact(['products', 'peoples']));
+    return view('index', compact(['products']));
 })->name('index');
 
 Route::prefix('auth')->group(function () {
