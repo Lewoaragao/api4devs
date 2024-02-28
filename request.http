@@ -1,8 +1,57 @@
-@hostname = http://localhost:8000
+@hostname = http://localhost:8000/api
+@token = 3|h57pDSRdTTNhk3cp5jNT34bujT1q6Hyciu4ILeOscfc7553c
+
+### HELLO WORLD
+GET {{hostname}}/hello
+
+### AUTH
+POST {{hostname}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "email": "admin@example.com",
+    "password": "123"
+}
+###
+POST {{hostname}}/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "admin",
+    "email": "admin@example.com",
+    "password": "123"
+}
+###
+POST {{hostname}}/auth/logout HTTP/1.1
+Authorization: Bearer {{token}}
 
 ### PRODUCT
-GET {{hostname}}/api/products
+GET {{hostname}}/product
+###
+GET {{hostname}}/product/1
+###
+POST {{hostname}}/product
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
+{
+    "name": "Product 1",
+    "description": "Description product 1",
+    "price": "1.00",
+    "quantity": 2
+}
+###
+PUT {{hostname}}/product/4
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
-### PEOPLE
-GET {{hostname}}/api/peoples
+{
+    "name": "Product 1 atualizado",
+    "description": "Description product 1",
+    "price": "10.00",
+    "quantity": 2
+}
+###
+DELETE {{hostname}}/product/36
+Authorization: Bearer {{token}}

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\ProductController;
@@ -21,11 +22,6 @@ use Illuminate\Support\Facades\Route;
 // HELLO WORLD
 Route::get('/hello', [RouteController::class, 'helloWorld']);
 
-// TEST
-// Route::prefix('test')->group(function () {
-//     Route::get('/{id}', [ProductController::class, 'show']);
-// });
-
 // AUTH
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
@@ -33,12 +29,17 @@ Route::prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth:api');
 });
 
-// PUBLIC
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/peoples', [PeopleController::class, 'index']);
-
 // PRODUCT
-Route::middleware(['auth:api'])->group(function () {
-    Route::resource('product', ProductController::class);
-    Route::resource('people', PeopleController::class);
+Route::prefix('product')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::post('/', [ProductController::class, 'store'])->middleware('auth:api');
+    Route::put('/{id}', [ProductController::class, 'update'])->middleware('auth:api');
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware('auth:api');
 });
+
+// PEOPLE
+// ADDRESS
+// MOVIES
+// SERIES
+// DORAMAS

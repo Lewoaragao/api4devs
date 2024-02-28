@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\MessageService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
@@ -66,8 +68,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
 
-        return Response(['message' => 'Successfully logged out'], Response::HTTP_OK);
+        return MessageService::ok('Successfully logged out');
     }
 }

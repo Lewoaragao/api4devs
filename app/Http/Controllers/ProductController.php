@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\ExceptionService;
+use App\Service\MessageService;
 use Exception;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -15,18 +17,17 @@ class ProductController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            // Obter o ID do usuário logado
-            $loggedInUserId = Auth::id();
+        try {
+            if (Auth::check()) {
+                $products = Product::whereIn('user_id', [Auth::id(), 1])->paginate(10);
+            } else {
+                $products = Product::where('user_id', 1)->paginate(10);
+            }
 
-            // Recuperar os produtos dos dois usuários em uma única consulta
-            $products = Product::whereIn('user_id', [$loggedInUserId, 1])->paginate(10);
-        } else {
-            // Se o usuário não estiver autenticado, recuperar apenas os produtos do usuário com ID 1
-            $products = Product::where('user_id', 1)->paginate(10);
+            return Response($products);
+        } catch (Exception $e) {
+            return Response(['error' => $e->getMessage()], $e->getCode());
         }
-
-        return Response($products);
     }
 
     /**
@@ -49,11 +50,6 @@ class ProductController extends Controller
     {
         try {
             $product = $this->findObjectById($id);
-
-            if ($product->user_id !== Auth::id()) {
-                return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-            }
-
             return Response($product);
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
@@ -67,10 +63,6 @@ class ProductController extends Controller
     {
         try {
             $product = $this->findObjectById($id);
-
-            if ($product->user_id !== Auth::id()) {
-                return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-            }
 
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
@@ -93,12 +85,8 @@ class ProductController extends Controller
     {
         try {
             $product = $this->findObjectById($id);
-
-            if ($product->user_id !== Auth::id()) {
-                return Response(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-            }
             $product->delete();
-            return Response(['message' => 'Product deleted successfully']);
+            return MessageService::destroyOk();
         } catch (Exception $e) {
             return Response(['error' => $e->getMessage()], $e->getCode());
         }
@@ -107,11 +95,23 @@ class ProductController extends Controller
     protected function findObjectById($id)
     {
         $product = Product::find($id);
-
-        if (!$product) {
-            throw new Exception('Product not found', Response::HTTP_NOT_FOUND);
-        }
+        $this->objectExists($product);
 
         return $product;
+    }
+
+    protected function objectExists($obj)
+    {
+        if (!$obj) {
+            ExceptionService::notFound();
+        }
+
+        if (Auth::check() && (Auth::id() != $obj->user_id)) {
+            ExceptionService::unauthorized();
+        }
+
+        if (!Auth::check() && $obj->user_id != 1) {
+            ExceptionService::unauthorized();
+        }
     }
 }

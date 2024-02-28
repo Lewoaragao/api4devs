@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +14,12 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 product instances using a factory
-        Product::factory()->count(10)->create();
+        // Obtenha todos os usuários existentes
+        $users = User::all();
+
+        // Crie três produtos para cada usuário
+        $users->each(function ($user) {
+            Product::factory()->count(3)->create(['user_id' => $user->id]);
+        });
     }
 }
