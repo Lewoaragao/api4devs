@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\People;
-use App\Models\Product;
+use App\Http\Controllers\RouteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,18 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    $products = Product::where('user_id', 1)->get();
-
-    return view('index', compact(['products']));
-})->name('index');
+Route::get('/', [RouteController::class, 'index'])->name('view.index');
 
 Route::prefix('auth')->group(function () {
-    Route::get('/login', function () {
-        return view('auth.login');
-    })->name('auth.login.view');
-
-    Route::get('/register', function () {
-        return view('auth.register');
-    })->name('auth.register.view');
+    Route::get('/login', [RouteController::class, 'login'])->name('view.auth.login');
+    Route::get('/register', [RouteController::class, 'register'])->name('view.auth.register');
 });

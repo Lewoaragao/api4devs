@@ -11,6 +11,64 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    /**
+     * Registering a new User.
+     *
+     * @OA\Post(
+     *   path="/api/auth/register",
+     *   tags={"Auth"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Response Successful",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="message",
+     *           type="string",
+     *           example="User created successfully"
+     *         ),
+     *         @OA\Property(
+     *           property="data",
+     *           type="object",
+     *           ref="#/components/schemas/User"
+     *         )
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="default",
+     *     description="Response Error"
+     *   ),
+     *   @OA\RequestBody(
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="name",
+     *           type="string",
+     *           description="The name of User.",
+     *           example="John Doe"
+     *         ),
+     *         @OA\Property(
+     *           property="email",
+     *           type="string",
+     *           description="The email of User.",
+     *           example="john@doe.com"
+     *         ),
+     *         @OA\Property(
+     *           property="password",
+     *           type="string",
+     *           description="The password of User.",
+     *           example="@api4devs"
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     *
+     * @return array
+     */
     public function register(Request $request)
     {
 
@@ -35,6 +93,53 @@ class AuthController extends Controller
         return Response(['message' => 'User created successfully'], Response::HTTP_CREATED);
     }
 
+    /**
+     * Starts User session.
+     *
+     * @OA\Post(
+     *   path="/api/auth/login",
+     *   tags={"Auth"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Response Successful",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="token",
+     *           type="string",
+     *           example="access_token"
+     *         ),
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="default",
+     *     description="Response Error"
+     *   ),
+     *   @OA\RequestBody(
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="email",
+     *           type="string",
+     *           description="The email of User.",
+     *           example="john@doe.com"
+     *         ),
+     *         @OA\Property(
+     *           property="password",
+     *           type="string",
+     *           description="The password of User.",
+     *           example="@api4devs"
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
+     *
+     * @return array
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -48,24 +153,45 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Attempt to authenticate via email
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-        } else {
-            // Attempt to authenticate using name
-            $user = User::where('name', $request->email)->first();
-
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                return Response(['message' => 'Unauthorized'], 401);
-            }
         }
 
         $token = $user->createToken('api4devs')->plainTextToken;
 
-        return Response(['token' => $token], 200);
+        return Response(['token' => $token], Response::HTTP_OK);
     }
 
 
+
+    /**
+     * Log out of the User session.
+     *
+     * @OA\Post(
+     *   path="/api/auth/logout",
+     *   tags={"Auth"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Response Successful",
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(
+     *           property="message",
+     *           type="string",
+     *           example="Successfully logged out"
+     *         ),
+     *       )
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response="default",
+     *     description="Response Error"
+     *   ),
+     * )
+     *
+     * @return array
+     */
     public function logout(Request $request)
     {
         $user = Auth::user();

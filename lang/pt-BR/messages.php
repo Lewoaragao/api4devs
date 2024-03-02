@@ -17,4 +17,7 @@ return [
     'register' => 'Registrar',
     'login' => 'Entrar',
     'remember.me' => 'Lembre me',
+    'documentation' => 'Documentation',
+    'documentation.swagger.description' => 'Provides endpoints to manage information, including creation, retrieval,
+    update, and deletion functionalities.'
 ];

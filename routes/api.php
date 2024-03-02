@@ -1,11 +1,8 @@
 <?php
 
-use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RouteController;
-use App\Http\Middleware\ExceptionHandlerMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
