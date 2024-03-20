@@ -335,7 +335,7 @@ class ProductController extends Controller
             ExceptionService::notFound();
         }
 
-        if (Auth::check() && (Auth::id() != $obj->user_id)) {
+        if (Auth::check() && Auth::id() != $obj->user_id && $obj->user_id != 1) {
             ExceptionService::unauthorized();
         }
 

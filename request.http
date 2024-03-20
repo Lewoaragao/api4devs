@@ -1,5 +1,5 @@
 @hostname = http://localhost:8000/api
-@token = 3|h57pDSRdTTNhk3cp5jNT34bujT1q6Hyciu4ILeOscfc7553c
+@token = 5|6m6K6FvOkzFnJrK4UJevGGNVPqtCNFnI0UCrW5aT17e2bbf7
 
 ### FIRST
 GET {{hostname}}
@@ -31,7 +31,8 @@ Authorization: Bearer {{token}}
 ### PRODUCT
 GET {{hostname}}/product
 ###
-GET {{hostname}}/product/1
+GET {{hostname}}/product/34
+Authorization: Bearer {{token}}
 ###
 POST {{hostname}}/product
 Authorization: Bearer {{token}}

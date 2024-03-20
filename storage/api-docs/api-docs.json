@@ -299,7 +299,12 @@
                     "default": {
                         "description": "Response Error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [

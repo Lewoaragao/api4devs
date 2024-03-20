@@ -29,14 +29,8 @@ Route::prefix('auth')->group(function () {
 // PRODUCT
 Route::prefix('product')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{id}', [ProductController::class, 'show']);
+    Route::get('/{id}', [ProductController::class, 'show'])->middleware('auth:api');
     Route::post('/', [ProductController::class, 'store'])->middleware('auth:api');
     Route::put('/{id}', [ProductController::class, 'update'])->middleware('auth:api');
     Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware('auth:api');
 });
-
-// PEOPLE
-// ADDRESS
-// MOVIES
-// SERIES
-// DORAMAS
